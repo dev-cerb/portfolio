@@ -6,15 +6,22 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "contract:emit": "prisma contract emit"
   },
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "fastify": "^5.12.8"
+    "@prisma/orm-postgres": "8.0.0-rc.25",
+    "dotenv": "^18.0.10",
+    "dotenv-expand": "^1000.0.0",
+    "fastify": "^5.12.8",
+    "pg": "^8.23.1"
   },
   "devDependencies": {
+    "@prisma/cli-engine": "0.10.4",
     "@types/node": "^26.6.6",
+    "prisma": "8.0.0-rc.35",
     "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   }
