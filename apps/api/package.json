@@ -7,12 +7,14 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "contract:emit": "prisma contract emit"
+    "contract:emit": "prisma contract emit",
+    "create:superuser": "tsx src/scripts/seed.ts"
   },
   "license": "ISC",
   "type": "module",
   "dependencies": {
     "@prisma/orm-postgres": "8.0.0-rc.25",
+    "argon2": "^0.45.2",
     "dotenv": "^18.0.10",
     "dotenv-expand": "^1000.0.0",
     "fastify": "^5.12.8",
