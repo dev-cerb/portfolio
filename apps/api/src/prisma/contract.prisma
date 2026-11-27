@@ -6,6 +6,7 @@ model User {
   passwordHash String
   createdAt DateTime           @default(now()) @onCreate(now())
   updatedAt temporal.UpdatedAt
+  sessions Session[]
 }
 
 model Tag {
@@ -57,6 +58,15 @@ model ProjectTechnology{
   projectId Int 
 
   @@id([technologyId, projectId])
+}
+
+model Session{
+  id Int @id @default(autoincrement())
+  sessionHash String @unique
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  expiresAt DateTime
+  createdAt DateTime @default(now()) @onCreate(now())
 }
 
 enum Status{
