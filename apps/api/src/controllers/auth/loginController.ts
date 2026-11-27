@@ -11,7 +11,7 @@ async function loginController(
   const response = await loginService(req.body);
 
   if (response.error) {
-    return res.status(401).send(response.message);
+    return res.status(401).send({ message: response.message });
   }
 
   res.setCookie("session", response.session!, {
@@ -21,7 +21,7 @@ async function loginController(
     expires: response.sessionExpiresAt,
   });
 
-  return res.status(200).send(response.message);
+  return res.status(200).send({ message: response.message });
 }
 
 export default loginController;
