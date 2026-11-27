@@ -16,6 +16,10 @@
       "model": "ProjectTechnology",
       "namespace": "public"
     },
+    "Session": {
+      "model": "Session",
+      "namespace": "public"
+    },
     "Tag": {
       "model": "Tag",
       "namespace": "public"
@@ -344,6 +348,90 @@
               "table": "ProjectTechnology"
             }
           },
+          "Session": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "expiresAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "sessionHash": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "userId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "user": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "userId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "User",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "expiresAt": {
+                  "column": "expiresAt"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "sessionHash": {
+                  "column": "sessionHash"
+                },
+                "userId": {
+                  "column": "userId"
+                }
+              },
+              "namespaceId": "public",
+              "table": "Session"
+            }
+          },
           "Tag": {
             "fields": {
               "createdAt": {
@@ -544,7 +632,23 @@
                 }
               }
             },
-            "relations": {},
+            "relations": {
+              "sessions": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "userId"
+                  ]
+                },
+                "to": {
+                  "model": "Session",
+                  "namespace": "public"
+                }
+              }
+            },
             "storage": {
               "fields": {
                 "createdAt": {
@@ -842,6 +946,93 @@
               },
               "uniques": []
             },
+            "Session": {
+              "columns": {
+                "createdAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "expiresAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "id": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "default": {
+                    "expression": "autoincrement()",
+                    "kind": "function"
+                  },
+                  "nullable": false
+                },
+                "sessionHash": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "userId": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "Session_userId_idx_a489d58a"
+                  },
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "userId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Session"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "User"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "userId"
+                  ],
+                  "name": "Session_userId_idx_a489d58a",
+                  "prefix": "Session_userId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "sessionHash"
+                  ]
+                }
+              ]
+            },
             "Tag": {
               "columns": {
                 "createdAt": {
@@ -1024,10 +1215,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "075084bf5ccd736439461ca780a02733e8288c6f631e7ad0493d10fe0974eb77"
+    "storageHash": "098e4a15f9a44e2e6047cb97e66892fc2fa37671061bdef80784206a700de440"
   },
   "execution": {
-    "executionHash": "d10dabdd55bb9fe4f6e5cf10677670d51b22c3e03c724d1d8eccad862d0bb3c0",
+    "executionHash": "fea84a0cf310a97f771df129de6ddef7019cc38f38a49540253d760b5921a6cd",
     "mutations": {
       "defaults": [
         {
@@ -1062,6 +1253,20 @@
           "ref": {
             "entry": "Project",
             "field": "updatedAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "Session",
+            "field": "createdAt",
             "namespace": "public"
           }
         },

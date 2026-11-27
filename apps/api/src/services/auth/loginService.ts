@@ -1,6 +1,6 @@
 import * as argon2 from "argon2";
 
-import { randomUUID } from "node:crypto";
+import { randomUUID, createHash } from "node:crypto";
 
 import { LoginType } from "../../schemas/loginSchema.js";
 import { db } from "../../prisma/db.js";
@@ -20,11 +20,23 @@ async function loginService(data: LoginType) {
     };
   }
 
-  const session: string = randomUUID();
+  const sessionToken: string = randomUUID();
+  const sessionHash: string = createHash("sha256")
+    .update(sessionToken)
+    .digest("hex");
+
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + 7);
+
+  await db.orm.public.Session.create({
+    userId: userExists.id,
+    sessionHash: sessionHash,
+    expiresAt: expiresAt,
+  });
 
   return {
     error: false,
     message: "Authenticated.",
-    session: session,
+    session: sessionToken,
   };
 }
