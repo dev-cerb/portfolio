@@ -5,12 +5,12 @@ import type {
   HookHandlerDoneFunction,
 } from "fastify";
 
-import { loginSchema } from "../../schemas/loginSchema.js";
+import { loginSchema, LoginType } from "../../schemas/loginSchema.js";
 
 import loginController from "../../controllers/auth/loginController.js";
 
 async function authRoutes(app: FastifyInstance) {
-  app.post(
+  app.post<{ Body: LoginType }>(
     "/login",
     {
       preValidation: (

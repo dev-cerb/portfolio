@@ -13,6 +13,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@fastify/cookie": "^11.1.5",
     "@prisma/orm-postgres": "8.0.0-rc.25",
     "argon2": "^0.45.2",
     "dotenv": "^18.0.10",

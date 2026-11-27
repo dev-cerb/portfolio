@@ -7,3 +7,9 @@ allowBuilds:
   esbuild: false
   sharp: false
   unrs-resolver: false
+
+permissions:
+  '@prisma/orm-postgres':
+    skills: true
+  prisma:
+    skills: true

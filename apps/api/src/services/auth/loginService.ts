@@ -38,5 +38,8 @@ async function loginService(data: LoginType) {
     error: false,
     message: "Authenticated.",
     session: sessionToken,
+    sessionExpiresAt: expiresAt,
   };
 }
+
+export default loginService;
